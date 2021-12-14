@@ -2,14 +2,16 @@ package com.example.mytranslator.repositories;
 
 import com.example.mytranslator.models.Definition;
 import com.example.mytranslator.models.Word;
-import com.google.gson.Gson;
+import com.google.gson.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.Set;
 
 public class WordTranslatorRepository {
     private Gson gson = new Gson();
@@ -46,6 +48,23 @@ public class WordTranslatorRepository {
         } catch (Exception e) {
             return false;
         }
+    }
+    public boolean deleteDefinitions(String word, String language)  {
+        try {
+            JSONObject jsonObject = (JSONObject) new JSONParser().parse(new FileReader("src/main/resources/translations/" +  language + "/"  + word + ".json"));
+            Set keys = jsonObject.keySet();
+            Iterator iterator = keys.iterator();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                if (key.equals("definitions")) {
+                    iterator.remove();
+                    jsonObject.remove(key);
+                }
+            }
+        }  catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public boolean addDefinitionForWord(String word, String language, Definition definition){
