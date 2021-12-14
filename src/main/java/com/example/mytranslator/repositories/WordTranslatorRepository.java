@@ -50,13 +50,13 @@ public class WordTranslatorRepository {
             return false;
         }
     }
-    public boolean deleteDefinitions(String word, String language, String dict)  {
+    public boolean deleteDefinitions(String word, String language, String dictionary)  {
         String fileName = "src/main/resources/translations/" + language + "/" + word + ".json";
         try {
             Reader reader = Files.newBufferedReader(Paths.get(fileName));
             Word wordModel = gson.fromJson(reader, Word.class);
             reader.close();
-            wordModel.definitions.remove(dict);
+            wordModel.definitions.remove(dictionary);
             try {
                 Writer writer = new FileWriter(fileName);
                 gson.toJson(wordModel, writer);
