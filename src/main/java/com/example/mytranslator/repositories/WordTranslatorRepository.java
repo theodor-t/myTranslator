@@ -39,6 +39,7 @@ public class WordTranslatorRepository {
         return true;
     }
 
+
     public boolean deleteWord(String word, String language){
         String fileName = "src/main/resources/translations/" +  language + "/"  + word + ".json";
         try {
@@ -49,22 +50,24 @@ public class WordTranslatorRepository {
             return false;
         }
     }
-    public boolean deleteDefinitions(String word, String language)  {
+    public boolean deleteDefinitions(String word, String language, String dict)  {
+        String fileName = "src/main/resources/translations/" + language + "/" + word + ".json";
         try {
-            JSONObject jsonObject = (JSONObject) new JSONParser().parse(new FileReader("src/main/resources/translations/" +  language + "/"  + word + ".json"));
-            Set keys = jsonObject.keySet();
-            Iterator iterator = keys.iterator();
-            while (iterator.hasNext()) {
-                String key = (String) iterator.next();
-                if (key.equals("definitions")) {
-                    iterator.remove();
-                    jsonObject.remove(key);
-                }
+            Reader reader = Files.newBufferedReader(Paths.get(fileName));
+            Word wordModel = gson.fromJson(reader, Word.class);
+            reader.close();
+            wordModel.definitions.remove(dict);
+            try {
+                Writer writer = new FileWriter(fileName);
+                gson.toJson(wordModel, writer);
+                writer.close();
+            } catch (Exception e) {
+                return false;
             }
-        }  catch (Exception e) {
+            return true;
+        } catch (Exception e) {
             return false;
         }
-        return true;
     }
 
     public boolean addDefinitionForWord(String word, String language, Definition definition){

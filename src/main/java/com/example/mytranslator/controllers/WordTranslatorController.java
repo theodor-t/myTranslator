@@ -24,9 +24,9 @@ public class WordTranslatorController {
     public boolean deleteWord(@PathVariable String word, @PathVariable String language){
         return wordTranslatorRepository.deleteWord(word, language);
     }
-    @DeleteMapping(path = "translate/word/{language}/def/{word}")
-    public boolean deleteDefinitions(@PathVariable String word, @PathVariable String language){
-        return wordTranslatorRepository.deleteDefinitions(word, language);
+    @DeleteMapping(path = "translate/word/{language}/{word}/definitions")
+    public boolean  removeDefinition(@PathVariable String word, @PathVariable String language,@RequestBody String dictionary) {
+        return wordTranslatorRepository.deleteDefinitions(word, language,dictionary);
     }
 
     @PostMapping(path = "translate/word/{language}/{word}")
